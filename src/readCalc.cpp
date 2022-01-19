@@ -32,17 +32,22 @@ void doCalc(std::vector<std::string> lines) {
     int flag1 = 1;
     int flag2 = 1;
     int base = 10;
+    int sign = 1;
 
     first_number.reserve(lines[0].size());
     second_number.reserve(lines[1].size());
 
     // get the first number
-
     std::cout << "The first number is : ";
     for (int i = 0; i < lines[0].size() ; ++i) {
-//        if (lines[0][0] == '-') {
-//            flag1 = -1;
-//        }
+        if (lines[0][0] == '-' ) {
+            flag1 = -1;
+            lines[0][0] = '0';
+        }
+        if (lines[0][0] == '+' ) {
+            flag1 = 1;
+            lines[0][0] = '0';
+        }
         first_number.push_back(static_cast<int>(lines[0][i]) - 48);
         std::cout << first_number[i];
     }
@@ -54,13 +59,17 @@ void doCalc(std::vector<std::string> lines) {
     std::cout << std::endl;
     first_it = std::rbegin(first_number);
 
-
     // get the second number
     std::cout << "The second number is : ";
     for (int i = 0; i < lines[1].size() ; ++i) {
-//        if (lines[1][0] == '-') {
-//            flag2 = -1;
-//        }
+        if (lines[1][0] == '-') {
+            flag2 = -1;
+            lines[1][0] = '0';
+        }
+        if (lines[1][0] == '+') {
+            flag2 = 1;
+            lines[1][0] = '0';
+        }
         second_number.push_back(static_cast<int>(lines[1][i]) - 48);
         std::cout << second_number[i] ;
     }
@@ -70,52 +79,148 @@ void doCalc(std::vector<std::string> lines) {
     }
     std::cout << std::endl;
     second_it = std::rbegin(second_number);
+
     // do the calculation
 
-    if (first_number.size() > second_number.size() ) {
-        result = first_number;
-        result_it = std::rbegin(result);
-        for (int i = 0; i < second_number.size(); ++i) {
-            if ( *second_it + *first_it > base - 1 ) {
-                *result_it = *result_it + *second_it - base;
-                *(result_it + 1) = *(result_it + 1) + 1;
-                first_it++;
-                second_it++;
-                result_it++;
-            }else{
-                *result_it = *result_it + *second_it;
-                first_it++;
-                second_it++;
-                result_it++;
+    // if the first number and the second number has the same sign (eg: ++ or --)
+    if (flag1 == flag2) {
+        if (first_number.size() > second_number.size() ) {
+            result = first_number;
+            result_it = std::rbegin(result);
+            for (int i = 0; i < second_number.size(); ++i) {
+                if ( *second_it + *first_it > base - 1 ) {
+                    *result_it = *result_it + *second_it - base;
+                    *(result_it + 1) = *(result_it + 1) + 1;
+                    first_it++;
+                    second_it++;
+                    result_it++;
+                }else{
+                    *result_it = *result_it + *second_it;
+                    first_it++;
+                    second_it++;
+                    result_it++;
+                }
+            }
+        } else{
+            result = second_number;
+            result_it = std::rbegin(result);
+            for (int i = 0; i < first_number.size(); ++i) {
+                if (*second_it + *first_it > base - 1) {
+                    *result_it = *result_it + *first_it - base;
+                    *(result_it + 1) = *(result_it + 1) + 1;
+                    first_it++;
+                    second_it++;
+                    result_it++;
+                }else{
+                    *result_it = *result_it + *first_it;
+                    first_it++;
+                    second_it++;
+                    result_it++;
+                }
             }
         }
+
     } else{
-        result = second_number;
-        result_it = std::rbegin(result);
-        for (int i = 0; i < first_number.size(); ++i) {
-            if (*second_it + *first_it > base - 1) {
-                *result_it = *result_it + *first_it - base;
-                *(result_it + 1) = *(result_it + 1) + 1;
-                first_it++;
-                second_it++;
-                result_it++;
-            }else{
-                *result_it = *result_it + *first_it;
-                first_it++;
-                second_it++;
-                result_it++;
+// depends on which number has the minus sign
+       if (flag1 == -1 ) {
+            if (first_number.size() > second_number.size() ) {
+                result = first_number;
+                result_it = std::rbegin(result);
+                for (int i = 0; i < second_number.size(); ++i) {
+                    if ( *first_it - *second_it < 0 ) {
+                        *result_it = *result_it - *second_it + base;
+                        *(result_it + 1) = *(result_it + 1) - 1;
+                        first_it++;
+                        second_it++;
+                        result_it++;
+                    }else{
+                        *result_it = *result_it - *second_it;
+                        first_it++;
+                        second_it++;
+                        result_it++;
+                    }
+                sign = -1;
+                }
+            } else{
+                result = second_number;
+                result_it = std::rbegin(result);
+                for (int i = 0; i < first_number.size(); ++i) {
+                    if (*second_it - *first_it < 0) {
+                        *result_it = *result_it - *first_it + base;
+                        *(result_it + 1) = *(result_it + 1) - 1;
+                        first_it++;
+                        second_it++;
+                        result_it++;
+                    }else{
+                        *result_it = *result_it - *first_it;
+                        first_it++;
+                        second_it++;
+                        result_it++;
+                    }
+                }
+                if ( *(result_it + 1) != 0) {
+                    sign = -1 ;
+                }
             }
         }
+       if (flag2 == -1 ) {
+           if (first_number.size() > second_number.size() ) {
+               result = first_number;
+               result_it = std::rbegin(result);
+               for (int i = 0; i < second_number.size(); ++i) {
+                   if ( *first_it - *second_it < 0 ) {
+                       *result_it = *result_it + *second_it + base;
+                       *(result_it + 1) = *(result_it + 1) - 1;
+                       first_it++;
+                       second_it++;
+                       result_it++;
+                   }else{
+                       *result_it = *result_it - *second_it;
+                       first_it++;
+                       second_it++;
+                       result_it++;
+                   }
+               }
+           } else{
+               result = second_number;
+               result_it = std::rbegin(result);
+               for (int i = 0; i < first_number.size(); ++i) {
+                   if (*second_it - *first_it < 0) {
+                       *result_it = *result_it - *first_it + base;
+                       *(result_it + 1) = *(result_it + 1) - 1;
+                       first_it++;
+                       second_it++;
+                       result_it++;
+                   }else{
+                       *result_it = *result_it - *first_it;
+                       first_it++;
+                       second_it++;
+                       result_it++;
+                   }
+               }
+               sign = -1;
+               if ( second_number.end() < first_number.end() && second_number.size() == first_number.size()) {
+                   sign = 1;
+               }
+           }
+       }
     }
 
+    // print out the result
     std::cout << "The result is :" << std::endl;
+
+    if (flag1 == flag2 && flag1 == -1) {
+            std::cout << "-" ;
+    }
+
+    if ( sign == -1) {
+        std::cout << "-" ;
+    }
 
     for (int i = 0; i < result.size() ; ++i) {
         std::cout << result[i];
     }
-
 }
-
 
 int main(int argc, char **argv){
 
