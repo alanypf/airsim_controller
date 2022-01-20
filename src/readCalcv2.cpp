@@ -122,7 +122,7 @@ void doCalc(std::deque<std::string> lines) {
 
             if (*result_it + *first_it + *second_it > base - 1) {
                 *result_it = *result_it + *first_it + *second_it - base;
-                *(result_it + 1) = *(result_it + 1) + 1;
+                *(result_it + 1) += 1;
                 first_it++;
                 second_it++;
                 result_it++;
@@ -135,49 +135,7 @@ void doCalc(std::deque<std::string> lines) {
         }
         removeZero(result);
     } else{
-// depends on which number has the minus sign
-        if (flag1 == -1 ) {
-            if (first_number.size() > second_number.size() ) {
-                result = first_number;
-                result_it = std::rbegin(result);
-                for (int i = 0; i < second_number.size(); ++i) {
-                    if ( *first_it - *second_it < 0 ) {
-                        *result_it = *result_it - *second_it + base;
-                        *(result_it + 1) = *(result_it + 1) - 1;
-                        first_it++;
-                        second_it++;
-                        result_it++;
-                    }else{
-                        *result_it = *result_it - *second_it;
-                        first_it++;
-                        second_it++;
-                        result_it++;
-                    }
-                    sign = -1;
-                }
-            } else{
-                result = second_number;
-                result_it = std::rbegin(result);
-                for (int i = 0; i < first_number.size(); ++i) {
-                    if (*second_it - *first_it < 0) {
-                        *result_it = *result_it - *first_it + base;
-                        *(result_it + 1) = *(result_it + 1) - 1;
-                        first_it++;
-                        second_it++;
-                        result_it++;
-                    }else{
-                        *result_it = *result_it - *first_it;
-                        first_it++;
-                        second_it++;
-                        result_it++;
-                    }
-                }
-                if ( *(result_it + 1) != 0) {
-                    sign = -1 ;
-                }
-            }
-        }
-        if (flag2 == -1 ) {
+
             first_number.push_front(0);
             second_number.push_front(0);
 
@@ -189,7 +147,7 @@ void doCalc(std::deque<std::string> lines) {
 
                 if (*result_it + *first_it - *second_it < 0) {
                     *result_it = *result_it + *first_it - *second_it + base;
-                    *(result_it + 1) = *(result_it + 1) - 1;
+                    *(result_it + 1) +=  - 1;
                     first_it++;
                     second_it++;
                     result_it++;
@@ -200,6 +158,8 @@ void doCalc(std::deque<std::string> lines) {
                     result_it++;
                 }
             }
+            // result has the same sign with the first number
+            sign = flag1;
 
             if (*result_it != 0) {
 
@@ -211,7 +171,7 @@ void doCalc(std::deque<std::string> lines) {
                 for (int i = 0; i < std::min(first_number.size(), second_number.size()) ; ++i) {
                     if (*result_it + *second_it - *first_it < 0) {
                         *result_it = *result_it + *second_it - *first_it + base;
-                        *(result_it + 1) = *(result_it + 1) - 1;
+                        *(result_it + 1) += - 1;
                         first_it++;
                         second_it++;
                         result_it++;
@@ -222,11 +182,11 @@ void doCalc(std::deque<std::string> lines) {
                         result_it++;
                     }
                 }
-                sign = -1;
+                sign = flag2;
             }
             removeZero(result);
         }
-    }
+
 
     // print out the final result
     std::cout << "The result is :" << std::endl;
