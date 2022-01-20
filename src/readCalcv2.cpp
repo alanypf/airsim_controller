@@ -204,7 +204,6 @@ void doCalc(std::deque<std::string> lines) {
             if (*result_it != 0) {
 
                 result.assign(std::max(first_number.size(), second_number.size()), 0);
-
                 first_it = std::rbegin(first_number);
                 second_it = std::rbegin(second_number);
                 result_it = std::rbegin((result));

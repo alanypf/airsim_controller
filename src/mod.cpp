@@ -44,7 +44,7 @@ int main(int argc, char **argv)
     pose.pose.position.z = 2;
 
     //send a few setpoints before starting
-    for(int i = 50; ros::ok() && i > 0; --i){
+    for(int i = 100; ros::ok() && i > 0; --i){
         local_pos_pub.publish(pose);
         ros::spinOnce();
         rate.sleep();
@@ -59,24 +59,21 @@ int main(int argc, char **argv)
     ros::Time last_request = ros::Time::now();
 
     while(ros::ok()){
-        if( current_state.mode != "OFFBOARD" &&
-            (ros::Time::now() - last_request > ros::Duration(5.0))){
-            if( set_mode_client.call(offb_set_mode) &&
-                offb_set_mode.response.mode_sent){
-                ROS_INFO("Offboard enabled");
-                ROS_INFO("!");
-            }
-            last_request = ros::Time::now();
-        } else {
-            if( !current_state.armed &&
-                (ros::Time::now() - last_request > ros::Duration(5.0))){
+
+            if( !current_state.armed ){
+
                 if( arming_client.call(arm_cmd) &&
                     arm_cmd.response.success){
                     ROS_INFO("Vehicle armed");
+
+                    if( set_mode_client.call(offb_set_mode) &&
+                        offb_set_mode.response.mode_sent){
+                        ROS_INFO("Offboard enabled!");
+                        local_pos_pub.publish(pose);
+                    }
                 }
-                last_request = ros::Time::now();
             }
-        }
+
 
         local_pos_pub.publish(pose);
 

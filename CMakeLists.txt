@@ -154,6 +154,9 @@ include_directories(
 add_executable(offboard_example src/offboard_example.cpp)
 target_link_libraries(offboard_example ${catkin_LIBRARIES})
 
+add_executable(mod src/mod.cpp)
+target_link_libraries(mod ${catkin_LIBRARIES})
+
 add_executable(circle src/circle.cpp)
 target_link_libraries(circle ${catkin_LIBRARIES})
 
