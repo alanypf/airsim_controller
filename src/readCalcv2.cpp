@@ -51,9 +51,46 @@ void printOutResult(std::deque<int>& result_deque, int flag1, int flag2, int sig
     }
 
     for (int i = 0; i < result_deque.size() ; ++i) {
-        std::cout << result_deque[i];
+
+        if (result_deque[i] >= 0 && result_deque[i] < 10) {
+            std::cout << result_deque[i];
+        } else {
+            std::cout << static_cast<char>(result_deque[i] - 10 + 'A');
+        }
     }
 }
+
+void checkValidation(std::deque<int> number, int mode) {
+    for (int i = 0; i < number.size(); ++i) {
+        if (number[i] > mode - 1) {
+            std::cout << "The input mode is illegal, please make sure the mode lies in the 0-36" << std::endl;
+        }
+    }
+}
+
+int getMode(std::string mode){
+    int mode_int = std::stoi(mode);
+    return mode_int;
+}
+
+std::deque<int> convert2Number(std::string lines, int mode = 10){
+
+    std::deque<int> output;
+    for (int i = 0; i < lines.size(); ++i) {
+        if (lines[i] - '0' < 10 && lines[i] - '0' >= 0){
+            output.push_back(static_cast<int>(lines[i] - '0')) ;
+        }
+        if (lines[i] - 'a' < 27 && lines[i] - 'a' >= 0){
+            output.push_back(static_cast<int>(lines[i] - 'a' + 10 )) ;
+        }
+        if (lines[i] - 'A' < 27 && lines[i] - 'A' >= 0){
+            output.push_back(static_cast<int>(lines[i] - 'A' + 10 )) ;
+        }
+    }
+    return output;
+}
+
+
 
 
 void doCalc(std::deque<std::string> lines) {
@@ -68,6 +105,8 @@ void doCalc(std::deque<std::string> lines) {
     int base = 10;
     int sign = 1;
 
+    // get the input mode
+    base = getMode(lines[2]);
     // get the first number
     std::cout << "The first number is : ";
     for (int i = 0; i < lines[0].size() ; ++i) {
@@ -79,10 +118,12 @@ void doCalc(std::deque<std::string> lines) {
             flag1 = 1;
             lines[0][0] = '0';
         }
-        first_number.push_back(static_cast<int>(lines[0][i]) - 48);
+//        first_number.push_back(static_cast<int>(lines[0][i]) - '0');
+        first_number = convert2Number(lines[0], base);
     }
 
     removeZero(first_number);
+    checkValidation(first_number, base);
     printOutResult(first_number, flag1, 0,0);
     std::cout << std::endl;
 
@@ -97,10 +138,12 @@ void doCalc(std::deque<std::string> lines) {
             flag2 = 1;
             lines[1][0] = '0';
         }
-        second_number.push_back(static_cast<int>(lines[1][i]) - 48);
+//        second_number.push_back(static_cast<int>(lines[1][i]) - '0');
+        second_number = convert2Number(lines[1], base);
     }
 
     removeZero(second_number);
+    checkValidation(second_number, base);
     printOutResult(second_number, 0, flag2, 0);
     std::cout << std::endl;
 
@@ -189,7 +232,7 @@ void doCalc(std::deque<std::string> lines) {
 
 
     // print out the final result
-    std::cout << "The result is :" << std::endl;
+    std::cout << "The result is : " ;
     printOutResult(result, flag1, flag2, sign);
 }
 
@@ -197,7 +240,7 @@ void doCalc(std::deque<std::string> lines) {
 int main(int argc, char **argv){
 
     std::string inputFile(argv[1]);
-//    std::string method(argv[2]);
+//    std::string input_mode(argv[2]);
     std::deque<std::string> lines = readLines(inputFile);
     doCalc(lines);
     return 0;
