@@ -168,6 +168,9 @@ target_link_libraries(readCalc ${catkin_LIBRARIES})
 
 add_executable(demo src/demo.cpp)
 target_link_libraries(demo ${catkin_LIBRARIES})
+
+add_executable(circle_raw src/circle_raw.cpp)
+target_link_libraries(circle_raw ${catkin_LIBRARIES})
 #############
 ## Install ##
 #############
