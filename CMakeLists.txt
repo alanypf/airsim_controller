@@ -11,6 +11,7 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
   std_msgs
+  quadrotor_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -171,6 +172,9 @@ target_link_libraries(demo ${catkin_LIBRARIES})
 
 add_executable(circle_raw src/circle_raw.cpp)
 target_link_libraries(circle_raw ${catkin_LIBRARIES})
+
+add_executable(ego_airsim src/ego_airsim.cpp)
+target_link_libraries(ego_airsim ${catkin_LIBRARIES})
 #############
 ## Install ##
 #############
