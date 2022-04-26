@@ -16,11 +16,21 @@
 #include <mavros_msgs/PositionTarget.h>
 #include <std_msgs/Int8.h>
 #include <quadrotor_msgs/PositionCommand.h>
+#include <dynamic_reconfigure/server.h>
+#include "airsim_controller/egoConfig.h"
 
 
 mavros_msgs::State current_state;
 std_msgs::Int8 avoid_state;
 quadrotor_msgs::PositionCommand pos_cmd;
+geometry_msgs::PoseStamped goal_pos;
+
+void dyn_cb(airsim_controller::egoConfig &config, uint32_t level) {
+    avoid_state.data = config.int_param;
+    goal_pos.pose.position.x = config.x;
+    goal_pos.pose.position.y = config.y;
+    goal_pos.pose.position.z = config.z;
+}
 
 void ego_cb(const quadrotor_msgs::PositionCommandConstPtr& msg){
     pos_cmd = *msg;
@@ -41,6 +51,13 @@ int main(int argc, char **argv)
 
     avoid_state.data = 0;
 
+
+    dynamic_reconfigure::Server<airsim_controller::egoConfig> server;
+    dynamic_reconfigure::Server<airsim_controller::egoConfig>::CallbackType f;
+
+    f = boost::bind(&dyn_cb, _1, _2);
+    server.setCallback(f);
+
     ros::Subscriber state_sub = nh.subscribe<mavros_msgs::State>
             ("mavros/state", 10, state_cb);
     ros::Publisher local_pos_pub = nh.advertise<mavros_msgs::PositionTarget>
@@ -50,7 +67,8 @@ int main(int argc, char **argv)
             ("position_cmd", 10, ego_cb);
     ros::Subscriber avoid_sub = nh.subscribe<std_msgs::Int8>
             ("avoid/state", 10, avoid_cb);
-
+    ros::Publisher goal_pub = nh.advertise<geometry_msgs::PoseStamped>
+            ("move_base_simple/goal", 10);
 
     ros::ServiceClient arming_client = nh.serviceClient<mavros_msgs::CommandBool>
             ("mavros/cmd/arming");
@@ -63,7 +81,7 @@ int main(int argc, char **argv)
 
     float xc0 = 0;
     float yc0 = 0;
-    float zc0 = 2;
+    float zc0 = 1;
 
     // wait for FCU connection
     while(ros::ok() && !current_state.connected){
@@ -129,7 +147,7 @@ int main(int argc, char **argv)
             ego_position.position.x = xc0 ;
             ego_position.position.y = yc0 ;
             ego_position.position.z = zc0;
-            ego_position.yaw = 3.1415926/2;
+            ego_position.yaw = 0;
         }
 
         if (avoid_state.data == 99) {
@@ -139,11 +157,12 @@ int main(int argc, char **argv)
             ego_position.position.x = pos_cmd.position.x ;
             ego_position.position.y = pos_cmd.position.y ;
             ego_position.position.z = pos_cmd.position.z ;
-            ego_position.yaw = 3.1415926/2;
+            ego_position.yaw = 0;
 
         }
 
         local_pos_pub.publish(ego_position);
+        goal_pub.publish(goal_pos);
 
         ros::spinOnce();
         rate.sleep();
