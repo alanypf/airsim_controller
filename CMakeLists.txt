@@ -193,6 +193,12 @@ target_link_libraries(wz_mocap ${catkin_LIBRARIES})
 
 add_executable(wz_px4 src/wz_mocap.cpp)
 target_link_libraries(wz_px4 ${catkin_LIBRARIES})
+
+add_executable(visual_traj src/visual_traj.cpp)
+target_link_libraries(visual_traj ${catkin_LIBRARIES})
+
+add_executable(circle_z src/circle_z.cpp)
+target_link_libraries(circle_z  ${catkin_LIBRARIES})
 #############
 ## Install ##
 #############
