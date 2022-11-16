@@ -33,11 +33,11 @@ int main(int argc, char **argv)
     ros::Rate rate(20.0);
 
     //
-    double circle_rate = 40;
+    double circle_rate = 60;
     double t_step = 1.0/ circle_rate;
 
     // parameters for circle
-    double wn = 0.8;
+    double wn = 0.6;
     double r = 2;
     double counter = 0;
 

@@ -174,9 +174,25 @@ target_link_libraries(demo ${catkin_LIBRARIES})
 add_executable(circle_raw src/circle_raw.cpp)
 target_link_libraries(circle_raw ${catkin_LIBRARIES})
 
+add_executable(multithread_test src/multithread_test.cpp)
+target_link_libraries(multithread_test ${catkin_LIBRARIES})
+
 add_executable(ego_airsim src/ego_airsim.cpp)
 target_link_libraries(ego_airsim ${catkin_LIBRARIES})
 add_dependencies(ego_airsim ${PROJECT_NAME}_gencfg)
+
+add_executable(offboard_gimbal src/offboard_gimbal.cpp)
+target_link_libraries(offboard_gimbal ${catkin_LIBRARIES})
+add_dependencies(offboard_gimbal ${PROJECT_NAME}_gencfg)
+
+add_executable(wz_lemniscate src/wz_lemniscate.cpp)
+target_link_libraries(wz_lemniscate ${catkin_LIBRARIES})
+
+add_executable(wz_mocap src/wz_mocap.cpp)
+target_link_libraries(wz_mocap ${catkin_LIBRARIES})
+
+add_executable(wz_px4 src/wz_mocap.cpp)
+target_link_libraries(wz_px4 ${catkin_LIBRARIES})
 #############
 ## Install ##
 #############
